@@ -4,7 +4,7 @@ name: CI deploy backend to Docker Hub
 on:
   # Triggers the workflow on push events but only for tags
   push:
-    branches: [ main ]
+    #branches: [ main ]
     paths:
       - backend/**
     tags:
@@ -60,7 +60,7 @@ jobs:
         with:
           context: ./backend
           file: backend/Dockerfile
-          platforms: linux/amd64,linux/arm64 #,linux/arm/v7 #,linux/386,linux/arm/v6
+          platforms: linux/amd64 #,linux/arm64 #,linux/arm/v7 #,linux/386,linux/arm/v6
           push: true
           tags: ${{ env.tags }}
           # cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/kitchenowl:buildcache
