@@ -33,7 +33,7 @@ class _SelectableButtonListTileState extends State<SelectableButtonListTile> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 4),
+      margin: const EdgeInsets.symmetric(vertical: 2),
       elevation: !widget.raised ? 0 : null,
       color: !widget.raised
           ? ElevationOverlay.applySurfaceTint(
@@ -63,7 +63,7 @@ class _SelectableButtonListTileState extends State<SelectableButtonListTile> {
                           : Theme.of(context).iconTheme.color!.withAlpha(170))
                   : null,
           title: Text(
-            widget.title,
+            widget.title + ((widget.description?.isNotEmpty ?? false) ? (' - ' + widget.description!) : ''),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodyMedium!.copyWith(
@@ -75,20 +75,7 @@ class _SelectableButtonListTileState extends State<SelectableButtonListTile> {
                     .withOpacity(.9)),
           ),
           selected: widget.selected,
-          subtitle: (widget.description?.isNotEmpty ?? false)
-              ? Text(
-                  widget.description!,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      color: !widget.raised
-                          ? null
-                          : Theme.of(context)
-                          .colorScheme
-                          .onPrimary
-                          .withOpacity(.9)),
-                )
-              : null,
+          visualDensity: VisualDensity(vertical: -4),
           onTap: widget.onPressed,
           onLongPress: widget.onLongPressed,
           contentPadding: const EdgeInsets.only(left: 16, right: 8),

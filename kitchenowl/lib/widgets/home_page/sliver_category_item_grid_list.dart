@@ -116,6 +116,7 @@ class _SliverCategoryItemGridListState<T extends Item>
                     child: Text(
                       widget.name,
                       style: titleTextStyle,
+                      textScaler: TextScaler.linear(0.8),
                     ),
                   ),
                   IconButton(
