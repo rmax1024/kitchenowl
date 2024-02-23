@@ -288,7 +288,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         .setRecentItemsCount,
                     defaultValue: 9,
                     lowerBound: 0,
-                    upperBound: 60,
+                    upperBound: 250,
                   ),
                 ),
                 if (!kIsWeb)
