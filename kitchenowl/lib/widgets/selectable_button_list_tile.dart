@@ -41,7 +41,7 @@ class _SelectableButtonListTileState extends State<SelectableButtonListTile> {
               Theme.of(context).colorScheme.surfaceTint,
               1.5,
             )
-          : null,
+          : Theme.of(context).colorScheme.primary,
       child: MouseRegion(
         onEnter: (event) {
           setState(() {
@@ -68,16 +68,11 @@ class _SelectableButtonListTileState extends State<SelectableButtonListTile> {
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 color: !widget.raised
-                    ? Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .color!
-                        .withAlpha(85)
+                    ? null
                     : Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .color!
-                        .withAlpha(170)),
+                    .colorScheme
+                    .onPrimary
+                    .withOpacity(.9)),
           ),
           selected: widget.selected,
           subtitle: (widget.description?.isNotEmpty ?? false)
@@ -87,16 +82,11 @@ class _SelectableButtonListTileState extends State<SelectableButtonListTile> {
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
                       color: !widget.raised
-                          ? Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .color!
-                              .withAlpha(85)
+                          ? null
                           : Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .color!
-                              .withAlpha(170)),
+                          .colorScheme
+                          .onPrimary
+                          .withOpacity(.9)),
                 )
               : null,
           onTap: widget.onPressed,
@@ -107,7 +97,7 @@ class _SelectableButtonListTileState extends State<SelectableButtonListTile> {
               : (widget.onLongPressed != null && mouseHover)
                   ? IconButton(
                       onPressed: widget.onLongPressed,
-                      color: widget.selected
+                      color: widget.raised
                           ? Theme.of(context).colorScheme.onPrimary
                           : null,
                       icon: const Icon(Icons.more_horiz_rounded),
