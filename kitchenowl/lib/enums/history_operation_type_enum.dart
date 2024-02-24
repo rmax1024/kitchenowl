@@ -1,0 +1,4 @@
+enum HistoryOperationTypeEnum {
+  added,
+  removed,
+}

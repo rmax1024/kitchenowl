@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kitchenowl/enums/history_operation_type_enum.dart';
 import 'package:kitchenowl/enums/shoppinglist_sorting.dart';
+import 'package:kitchenowl/helpers/stack.dart';
 import 'package:kitchenowl/models/category.dart';
 import 'package:kitchenowl/models/household.dart';
 import 'package:kitchenowl/models/item.dart';
@@ -19,6 +21,7 @@ class ShoppinglistCubit extends Cubit<ShoppinglistCubitState> {
   Future<void>? _refreshThread;
   String? _refreshCurrentQuery;
   int Function() recentItemCountProvider;
+  Stack<(int, HistoryOperationTypeEnum)>? history;
 
   String get query => (state is SearchShoppinglistCubitState)
       ? (state as SearchShoppinglistCubitState).query
@@ -38,6 +41,7 @@ class ShoppinglistCubit extends Cubit<ShoppinglistCubitState> {
     refresh();
     ApiService.getInstance().onShoppinglistItemAdd(onShoppinglistItemAdd);
     ApiService.getInstance().onShoppinglistItemRemove(onShoppinglistItemRemove);
+    history = Stack(limit: 50);
   }
 
   @override
@@ -83,10 +87,13 @@ class ShoppinglistCubit extends Cubit<ShoppinglistCubitState> {
 
   Future<void> search(String query) => refresh(query: query);
 
-  Future<void> add(Item item) async {
+  Future<void> add(Item item, {bool? addToHistory = true}) async {
     final _state = state;
     addLocally(ShoppinglistItem.fromItem(item: item));
     if (_state.selectedShoppinglist == null) return;
+    if (item.id != null && (addToHistory ?? false)) {
+      history?.push((item.id!, HistoryOperationTypeEnum.added));
+    }
     await TransactionHandler.getInstance()
         .runTransaction(TransactionShoppingListAddItem(
       shoppinglist: _state.selectedShoppinglist!,
@@ -120,9 +127,11 @@ class ShoppinglistCubit extends Cubit<ShoppinglistCubitState> {
     }
   }
 
-  Future<void> remove(ShoppinglistItem item) async {
+  Future<void> remove(ShoppinglistItem item, {bool? addToHistory = true}) async {
     final _state = state;
     removeLocally(item);
+    if (item.id != null && (addToHistory ?? false))
+      history?.push((item.id!, HistoryOperationTypeEnum.removed));
     if (!await TransactionHandler.getInstance()
         .runTransaction(TransactionShoppingListDeleteItem(
       shoppinglist: _state.selectedShoppinglist!,

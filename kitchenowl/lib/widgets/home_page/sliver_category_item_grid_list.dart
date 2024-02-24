@@ -119,6 +119,11 @@ class _SliverCategoryItemGridListState<T extends Item>
                       textScaler: TextScaler.linear(0.8),
                     ),
                   ),
+                  Text(
+                    widget.items.length.toString(),
+                    style: titleTextStyle,
+                    textScaler: TextScaler.linear(0.6),
+                  ),
                   IconButton(
                     onPressed: () => setState(() {
                       isExpanded = !isExpanded;

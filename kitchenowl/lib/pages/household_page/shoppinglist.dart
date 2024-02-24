@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kitchenowl/app.dart';
 import 'package:kitchenowl/cubits/shoppinglist_cubit.dart';
+import 'package:kitchenowl/enums/history_operation_type_enum.dart';
 import 'package:kitchenowl/enums/shoppinglist_sorting.dart';
 import 'package:kitchenowl/models/category.dart';
 import 'package:kitchenowl/models/item.dart';
@@ -18,6 +19,7 @@ class ShoppinglistPage extends StatefulWidget {
 
 class _ShoppinglistPageState extends State<ShoppinglistPage> {
   final TextEditingController searchController = TextEditingController();
+  var isBackButtonVisible = false;
 
   @override
   void initState() {
@@ -38,35 +40,70 @@ class _ShoppinglistPageState extends State<ShoppinglistPage> {
     return SafeArea(
       child: Column(
         children: [
-          SizedBox(
-            height: 70,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 6),
-              child: BlocListener<ShoppinglistCubit, ShoppinglistCubitState>(
-                bloc: cubit,
-                listener: (context, state) {
-                  if (state is! SearchShoppinglistCubitState &&
-                      state is! LoadingShoppinglistCubitState) {
-                    if (searchController.text.isNotEmpty) {
-                      searchController.clear();
-                    }
-                  }
-                },
-                child: SearchTextField(
-                  controller: searchController,
-                  onSearch: (s) => cubit.search(s),
-                  onSubmitted: () {
-                    final state = cubit.state;
-                    if (state is SearchShoppinglistCubitState) {
-                      if (state.result.first is! ShoppinglistItem) {
-                        cubit.add(state.result.first);
+          Row( children: [
+            Expanded( child:
+              SizedBox(
+                height: 70,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 6),
+                  child: BlocListener<ShoppinglistCubit, ShoppinglistCubitState>(
+                    bloc: cubit,
+                    listener: (context, state) {
+                      if (state is! SearchShoppinglistCubitState &&
+                          state is! LoadingShoppinglistCubitState) {
+                        if (searchController.text.isNotEmpty) {
+                          searchController.clear();
+                        }
                       }
-                    }
-                  },
+                    },
+                    child: SearchTextField(
+                      controller: searchController,
+                      onSearch: (s) => cubit.search(s),
+                      onSubmitted: () {
+                        final state = cubit.state;
+                        if (state is SearchShoppinglistCubitState) {
+                          if (state.result.first is! ShoppinglistItem) {
+                            cubit.add(state.result.first);
+                          }
+                        }
+                      },
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
+            Visibility(child: IconButton(
+              icon: const Icon(Icons.undo),
+              onPressed: () {
+                if (cubit.history?.size() == 0) {
+                  setState(() {
+                    isBackButtonVisible = cubit.history?.size() != 0;
+                  });
+                  return;
+                }
+                var operationRecord = cubit.history?.pop();
+                var (itemId, operation) = (operationRecord?.$1, operationRecord?.$2);
+                if (itemId == null || operation == null) return;
+                switch(operation){
+                  case HistoryOperationTypeEnum.added:
+                    var item = cubit.state.listItems.where((x) => x.id == itemId).firstOrNull;
+                    if (item != null)
+                      cubit.remove(item, addToHistory: false);
+                    break;
+                  case HistoryOperationTypeEnum.removed:
+                    var item = cubit.state.recentItems.where((x) => x.id == itemId).firstOrNull;
+                    if (item != null)
+                      cubit.add(item, addToHistory: false);
+                    break;
+                }
+
+                setState(() {
+                  isBackButtonVisible = cubit.history?.size() != 0;
+                });
+              },),
+              visible: isBackButtonVisible,
+            ),
+          ],),
           Expanded(
             child: Scrollbar(
               child: RefreshIndicator(
@@ -92,11 +129,17 @@ class _ShoppinglistPageState extends State<ShoppinglistPage> {
                               if (item is ShoppinglistItem) {
                                 if (App.settings.shoppingListTapToRemove) {
                                   cubit.remove(item);
+                                  setState(() {
+                                    isBackButtonVisible = true;
+                                  });
                                 } else {
                                   cubit.selectItem(item);
                                 }
                               } else {
                                 cubit.add(item);
+                                setState(() {
+                                  isBackButtonVisible = true;
+                                });
                               }
                             }),
                           ),
@@ -125,11 +168,17 @@ class _ShoppinglistPageState extends State<ShoppinglistPage> {
                           if (item is ShoppinglistItem) {
                             if (App.settings.shoppingListTapToRemove) {
                               cubit.remove(item);
+                              setState(() {
+                                isBackButtonVisible = true;
+                              });
                             } else {
                               cubit.selectItem(item);
                             }
                           } else {
                             cubit.add(item);
+                            setState(() {
+                              isBackButtonVisible = true;
+                            });
                           }
                         }),
                       );
@@ -164,11 +213,17 @@ class _ShoppinglistPageState extends State<ShoppinglistPage> {
                               if (item is ShoppinglistItem) {
                                 if (App.settings.shoppingListTapToRemove) {
                                   cubit.remove(item);
+                                  setState(() {
+                                    isBackButtonVisible = true;
+                                  });
                                 } else {
                                   cubit.selectItem(item);
                                 }
                               } else {
                                 cubit.add(item);
+                                setState(() {
+                                  isBackButtonVisible = true;
+                                });
                               }
                             },
                           ),
@@ -248,9 +303,14 @@ class _ShoppinglistPageState extends State<ShoppinglistPage> {
                             state is LoadingShoppinglistCubitState))
                           SliverCategoryItemGridList(
                             name:
-                                '${AppLocalizations.of(context)!.itemsRecent}:',
+                                '${AppLocalizations.of(context)!.itemsRecent}',
                             items: state.recentItems,
-                            onPressed: Nullable(cubit.add),
+                            onPressed: Nullable((Item item) {
+                              cubit.add(item);
+                              setState(() {
+                                isBackButtonVisible = true;
+                              });
+                            }),
                             categories: state.categories,
                             shoppingList: state.selectedShoppinglist,
                             onRefresh: cubit.refresh,
