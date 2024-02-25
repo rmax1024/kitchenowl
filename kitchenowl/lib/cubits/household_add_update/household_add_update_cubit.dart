@@ -49,6 +49,9 @@ abstract class HouseholdAddUpdateState extends Equatable {
       ];
 
   bool isViewActive(ViewsEnum view) {
+    if (this == ViewsEnum.recipes) {
+      return false;
+    }
     if (view == ViewsEnum.planner) {
       return featurePlanner;
     }

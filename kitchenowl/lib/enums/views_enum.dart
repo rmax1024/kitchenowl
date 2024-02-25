@@ -61,6 +61,9 @@ enum ViewsEnum {
   }
 
   bool isViewActive(Household household) {
+    if (this == ViewsEnum.recipes) {
+      return false;
+    }
     if (this == ViewsEnum.planner) {
       return household.featurePlanner ?? true;
     }
