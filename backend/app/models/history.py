@@ -86,12 +86,14 @@ class History(db.Model, DbModelMixin, TimestampMixin):
         sq2 = (
             db.session.query(func.max(cls.id))
             .filter(cls.status == Status.DROPPED)
+            .filter(cls.shoppinglist_id == shoppinglist_id)
             .filter(cls.item_id.notin_(sq))
             .group_by(cls.item_id)
             .join(cls.item)
             .subquery()
             .select()
         )
+        #print(sq2)
         return (
             cls.query.filter(cls.shoppinglist_id == shoppinglist_id)
             .filter(cls.id.in_(sq2))
