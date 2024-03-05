@@ -1,4 +1,6 @@
-﻿namespace BackendWebApi.Properties
+﻿using System.Text.Json.Serialization;
+
+namespace BackendWebApi.Properties
 {
     public class Settings
     {
@@ -7,5 +9,10 @@
         public string FrontendUrl { get; set; }
         public int MinFrontendVersion { get; set; }
         public int Version { get; set; }
+        public string StoragePath { get; set; }
+        public string DatabaseName { get; set; }
+
+        [JsonIgnore] public string DatabaseConnectionString => $"Data Source={Path.Combine(StoragePath, DatabaseName)}";
+        [JsonIgnore] public string AuthDatabaseConnectionString => $"Data Source={Path.Combine(StoragePath, "auth.db")}";
     }
 }

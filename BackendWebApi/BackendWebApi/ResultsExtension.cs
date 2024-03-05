@@ -32,16 +32,16 @@ class ObjectResult : IResult
             return httpContext.Response.WriteAsync(result);
         }
 
-        var referrer = request.Headers.Referer[0]!.TrimEnd('/');
+        var referer = request.Headers.Referer[0]!.TrimEnd('/');
 
         var settings = Settings.Current;
         if (!settings.IsDevelopment &&
-            (string.IsNullOrEmpty(settings.FrontendUrl) || !referrer.Equals(settings.FrontendUrl)))
+            (string.IsNullOrEmpty(settings.FrontendUrl) || !referer.Equals(settings.FrontendUrl)))
         {
             return httpContext.Response.WriteAsync(result);
         }
 
-        httpContext.Response.Headers.AccessControlAllowOrigin = referrer;
+        httpContext.Response.Headers.AccessControlAllowOrigin = referer;
         httpContext.Response.Headers.AccessControlAllowCredentials = "true";
         httpContext.Response.Headers.AccessControlAllowHeaders = new [] {"Content-Type", "Cache-Control", "X-Requested-With" };
         httpContext.Response.Headers.AccessControlAllowMethods = "GET, POST, OPTIONS, PUT, DELETE";
