@@ -160,3 +160,4 @@ build/
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
+/kitchenowl/windows/flutter/CMakeLists.txt
