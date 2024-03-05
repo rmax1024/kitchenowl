@@ -12,7 +12,8 @@ namespace BackendWebApi.Properties
         public string StoragePath { get; set; }
         public string DatabaseName { get; set; }
 
+        public JwtSettings JwtSettings { get; set; }
+
         [JsonIgnore] public string DatabaseConnectionString => $"Data Source={Path.Combine(StoragePath, DatabaseName)}";
-        [JsonIgnore] public string AuthDatabaseConnectionString => $"Data Source={Path.Combine(StoragePath, "auth.db")}";
     }
 }

@@ -4,12 +4,8 @@ using Dapper;
 
 namespace BackendWebApi.Common;
 
-public class CommonRepository : BaseRepository, ICommonRepository
+public class CommonRepository() : BaseRepository(Settings.Current.DatabaseConnectionString), ICommonRepository
 {
-    public CommonRepository() : base(Settings.Current.DatabaseConnectionString)
-    {
-    }
-
     public async Task<bool> IsOnboarding()
     {
         await using var connection = GetConnection();

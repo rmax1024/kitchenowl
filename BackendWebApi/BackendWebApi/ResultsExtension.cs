@@ -12,19 +12,18 @@ static class ResultsExtensions
     }
 }
 
-class ObjectResult : IResult
+class ObjectResult(object input) : IResult
 {
-    private readonly object _input;
-
-    public ObjectResult(object input)
-    {
-        _input = input;
-    }
-
     public Task ExecuteAsync(HttpContext httpContext)
     {
         httpContext.Response.ContentType = MediaTypeNames.Application.Json;
-        var result = JsonSerializer.Serialize(_input);
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
+        };
+
+        var result = JsonSerializer.Serialize(input, options);
         var request = httpContext.Request;
         
         if (request.Headers.Referer.Count == 0)
