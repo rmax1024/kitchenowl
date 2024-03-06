@@ -1,4 +1,4 @@
-﻿namespace BackendWebApi.Auth;
+﻿namespace BackendWebApi.Auth.Model;
 
 public enum TokenType
 {

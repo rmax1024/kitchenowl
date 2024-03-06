@@ -1,5 +1,6 @@
 ﻿using BackendWebApi.Core;
 using BackendWebApi.Properties;
+using BackendWebApi.Users.Model;
 using Dapper;
 
 namespace BackendWebApi.Users;
@@ -16,16 +17,7 @@ public class UserRepository() : BaseRepository(Settings.Current.DatabaseConnecti
     public async Task<User?> GetByUsername(string? username)
     {
         await using var connection = GetConnection();
-        try
-        {
-            var user = await connection.QueryFirstAsync<User?>("select * from user where username = @Username", new { Username = username});
-            return user;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-        
+        var user = await connection.QueryFirstAsync<User?>("select * from user where username = @Username", new { Username = username});
+        return user;
     }
 }

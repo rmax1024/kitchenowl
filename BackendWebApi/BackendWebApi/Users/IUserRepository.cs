@@ -1,4 +1,6 @@
-﻿namespace BackendWebApi.Users;
+﻿using BackendWebApi.Users.Model;
+
+namespace BackendWebApi.Users;
 
 public interface IUserRepository
 {

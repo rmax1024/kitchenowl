@@ -11,15 +11,19 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.28" />
+    <PackageReference Include="FastEndpoints" Version="5.23.0" />
+    <PackageReference Include="FastEndpoints.Security" Version="5.23.0" />
+    <PackageReference Include="FastEndpoints.Swagger" Version="5.23.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.2" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.2" />
+    <PackageReference Include="OneOf" Version="3.0.263" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common\" />
-    <Folder Include="Core\" />
+    <Folder Include="Households\Model\" />
+    <Folder Include="Users\Endpoints\" />
   </ItemGroup>
 
 </Project>

@@ -1,10 +1,11 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using BackendWebApi.Auth.Model;
 using BackendWebApi.Properties;
 using Microsoft.IdentityModel.Tokens;
 
-namespace BackendWebApi.Auth;
+namespace BackendWebApi.Auth.Utils;
 
 public class TokenGenerator
 {
