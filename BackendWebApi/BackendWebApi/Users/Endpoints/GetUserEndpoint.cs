@@ -1,5 +1,6 @@
 ﻿using BackendWebApi.Auth.Model;
 using BackendWebApi.Auth.Utils;
+using BackendWebApi.Core;
 using BackendWebApi.Helpers;
 using BackendWebApi.Users.Model;
 using FastEndpoints;
@@ -30,5 +31,10 @@ public class GetUserEndpoint(IUserRepository userRepository) : EndpointWithoutRe
         }
 
         await SendAsync(user, cancellation: ct);
+    }
+
+    public override void OnBeforeHandle(EmptyRequest req)
+    {
+        CoreResponseHandlerHelper.AddHeaders(HttpContext);
     }
 }

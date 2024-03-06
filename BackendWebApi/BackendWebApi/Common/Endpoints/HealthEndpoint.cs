@@ -1,4 +1,5 @@
 ﻿using BackendWebApi.Common.Model;
+using BackendWebApi.Core;
 using BackendWebApi.Properties;
 using FastEndpoints;
 
@@ -22,5 +23,10 @@ public class HealthEndpoint() : EndpointWithoutRequest<HealthResult>
             OidcProvider = Array.Empty<string>(),
             Version = Settings.Current.Version
         }, cancellation: ct);
+    }
+
+    public override void OnBeforeHandle(EmptyRequest req)
+    {
+        CoreResponseHandlerHelper.AddHeaders(HttpContext);
     }
 }

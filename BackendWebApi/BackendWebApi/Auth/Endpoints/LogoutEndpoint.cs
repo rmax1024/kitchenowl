@@ -1,4 +1,5 @@
-﻿using FastEndpoints;
+﻿using BackendWebApi.Core;
+using FastEndpoints;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace BackendWebApi.Auth.Endpoints;
@@ -14,5 +15,10 @@ public class LogoutEndpoint : EndpointWithoutRequest<Ok>
     {
         // TODO: add token removal
         return Task.FromResult(TypedResults.Ok());
+    }
+
+    public override void OnBeforeHandle(EmptyRequest req)
+    {
+        CoreResponseHandlerHelper.AddHeaders(HttpContext);
     }
 }

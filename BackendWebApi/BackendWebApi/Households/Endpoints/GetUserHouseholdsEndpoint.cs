@@ -1,4 +1,5 @@
-﻿using BackendWebApi.Helpers;
+﻿using BackendWebApi.Core;
+using BackendWebApi.Helpers;
 using BackendWebApi.Households.Model;
 using FastEndpoints;
 using System.Net;
@@ -23,5 +24,10 @@ public class GetUserHouseholdsEndpoint(IHouseholdRepository householdRepository)
         int userId = userIdResult.AsT0;
         var households = await householdRepository.GetByUserId(userId);
         await SendAsync(households, cancellation: ct);
+    }
+
+    public override void OnBeforeHandle(EmptyRequest req)
+    {
+        CoreResponseHandlerHelper.AddHeaders(HttpContext);
     }
 }

@@ -1,5 +1,9 @@
 ﻿using BackendWebApi.Common.Model;
+using BackendWebApi.Core;
+using BackendWebApi.Properties;
 using FastEndpoints;
+using Microsoft.AspNetCore.Http;
+using OneOf.Types;
 
 namespace BackendWebApi.Common.Endpoints;
 
@@ -7,8 +11,8 @@ public class OnboardingEndpoint(ICommonRepository commonRepository) : EndpointWi
 {
     public override void Configure()
     {
-        Get("onboarding");
         AllowAnonymous();
+        Get("onboarding");
     }
 
     public override async Task HandleAsync(CancellationToken ct)
@@ -17,5 +21,10 @@ public class OnboardingEndpoint(ICommonRepository commonRepository) : EndpointWi
         {
             Onboarding = await commonRepository.IsOnboarding()
         }, cancellation: ct);
+    }
+
+    public override void OnBeforeHandle(EmptyRequest req)
+    {
+        CoreResponseHandlerHelper.AddHeaders(HttpContext);
     }
 }

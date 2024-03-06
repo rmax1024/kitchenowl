@@ -2,6 +2,7 @@
 using System.Net;
 using BackendWebApi.Auth.Model;
 using BackendWebApi.Auth.Utils;
+using BackendWebApi.Core;
 using BackendWebApi.Helpers;
 using BackendWebApi.Users;
 using FastEndpoints;
@@ -37,5 +38,10 @@ public class TokenRefreshEndpoint(IUserRepository userRepository) : EndpointWith
             RefreshToken = TokenGenerator.GetToken(userId, TokenType.Refresh),
             User = user
         }, cancellation: ct);
+    }
+
+    public override void OnBeforeHandle(EmptyRequest req)
+    {
+        CoreResponseHandlerHelper.AddHeaders(HttpContext);
     }
 }
