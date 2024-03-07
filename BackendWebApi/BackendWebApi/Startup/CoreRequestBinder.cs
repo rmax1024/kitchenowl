@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using FastEndpoints;
 
-namespace BackendWebApi.Core;
+namespace BackendWebApi.Startup;
 
 public class CoreRequestBinder<TRequest> : RequestBinder<TRequest> where TRequest : notnull
 {
@@ -11,7 +11,7 @@ public class CoreRequestBinder<TRequest> : RequestBinder<TRequest> where TReques
         {
             return await base.BindAsync(ctx, ct);
         }
-        
+
         var req = await JsonSerializer.DeserializeAsync<TRequest>(
             ctx.HttpContext.Request.Body, ctx.SerializerOptions, ct);
 
