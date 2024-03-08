@@ -5,7 +5,7 @@ import 'package:kitchenowl/config.dart';
 import 'package:kitchenowl/helpers/named_bytearray.dart';
 import 'package:kitchenowl/models/household.dart';
 import 'package:kitchenowl/models/token.dart';
-import 'package:socket_io_client/socket_io_client.dart';
+//import 'package:socket_io_client/socket_io_client.dart';
 import 'package:tuple/tuple.dart';
 
 // Export extensions
@@ -50,7 +50,7 @@ class ApiService {
 
   static ApiService? _instance;
   final _client = http.Client();
-  late final Socket socket;
+  //late final Socket socket;
   final String baseUrl;
   String? _refreshToken;
   Map<String, String> headers = {};
@@ -68,29 +68,29 @@ class ApiService {
   ApiService._internal(String baseUrl)
       : baseUrl = baseUrl.isNotEmpty ? baseUrl + _API_PATH : "" {
     _connectionNotifier.value = Connection.undefined;
-    socket = io(
-      baseUrl,
-      OptionBuilder()
-          .setTransports([
-            kIsWeb ? 'polling' : 'websocket',
-          ]) // for Flutter or Dart VM
-          .disableAutoConnect() // disable auto-connection
-          .setExtraHeaders(headers)
-          .setReconnectionDelay(2000)
-          .setReconnectionDelayMax(6000)
-          .build(),
-    );
-    socket.onConnectError((data) {
-      if (connectionStatus != Connection.disconnected) {
-        socket.disconnect();
-      }
-    });
-    socket.onReconnect((data) {
-      if (connectionStatus == Connection.disconnected) refresh();
-    });
-    socket.onDisconnect((data) {
-      if (connectionStatus != Connection.disconnected) refresh();
-    });
+    // socket = io(
+    //   baseUrl,
+    //   OptionBuilder()
+    //       .setTransports([
+    //         kIsWeb ? 'polling' : 'websocket',
+    //       ]) // for Flutter or Dart VM
+    //       .disableAutoConnect() // disable auto-connection
+    //       .setExtraHeaders(headers)
+    //       .setReconnectionDelay(2000)
+    //       .setReconnectionDelayMax(6000)
+    //       .build(),
+    // );
+    // socket.onConnectError((data) {
+    //   if (connectionStatus != Connection.disconnected) {
+    //     socket.disconnect();
+    //   }
+    // });
+    // socket.onReconnect((data) {
+    //   if (connectionStatus == Connection.disconnected) refresh();
+    // });
+    // socket.onDisconnect((data) {
+    //   if (connectionStatus != Connection.disconnected) refresh();
+    // });
   }
 
   static ApiService getInstance() {
@@ -115,7 +115,7 @@ class ApiService {
     _connectionNotifier.value = Connection.undefined;
     _serverInfoNotifier.value = null;
     _client.close();
-    socket.dispose();
+    //socket.dispose();
   }
 
   void addListener(void Function() f) {
@@ -287,12 +287,12 @@ class ApiService {
   }
 
   void _setConnectionState(Connection newState) {
-    if (newState == Connection.authenticated && socket.disconnected) {
-      socket.io.options?['extraHeaders'] = headers;
-      socket.connect();
-    } else if (newState != Connection.authenticated && !socket.disconnected) {
-      socket.disconnect();
-    }
+    // if (newState == Connection.authenticated && socket.disconnected) {
+    //   socket.io.options?['extraHeaders'] = headers;
+    //   socket.connect();
+    // } else if (newState != Connection.authenticated && !socket.disconnected) {
+    //   socket.disconnect();
+    // }
     _connectionNotifier.value = newState;
   }
 
@@ -373,7 +373,7 @@ class ApiService {
   Future<bool> logout() async {
     if (isAuthenticated()) {
       final res = await delete('/auth');
-      socket.disconnect();
+      //socket.disconnect();
       if (res.statusCode == 200) refreshToken = '';
 
       return res.statusCode == 200;

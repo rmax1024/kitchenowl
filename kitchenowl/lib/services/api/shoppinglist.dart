@@ -162,18 +162,18 @@ extension ShoppinglistApi on ApiService {
   }
 
   void onShoppinglistItemAdd(dynamic Function(dynamic) handler) {
-    socket.on("shoppinglist_item:add", handler);
+    //socket.on("shoppinglist_item:add", handler);
   }
 
   void offShoppinglistItemAdd(dynamic Function(dynamic) handler) {
-    socket.off("shoppinglist_item:add", handler);
+    //socket.off("shoppinglist_item:add", handler);
   }
 
   void onShoppinglistItemRemove(dynamic Function(dynamic) handler) {
-    socket.on("shoppinglist_item:remove", handler);
+    //socket.on("shoppinglist_item:remove", handler);
   }
 
   void offShoppinglistItemRemove(dynamic Function(dynamic) handler) {
-    socket.off("shoppinglist_item:remove", handler);
+    //socket.off("shoppinglist_item:remove", handler);
   }
 }
