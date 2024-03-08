@@ -12,6 +12,8 @@ builder.Services.AddAuth()
                 .AddRepositories()
                 .AddFastEndpointServices();
 
+Console.WriteLine($"Database path: {Settings.Current.DatabaseConnectionString}");
+
 
 DapperConfiguration.Init();
 
