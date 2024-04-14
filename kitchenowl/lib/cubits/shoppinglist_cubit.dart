@@ -148,9 +148,9 @@ class ShoppinglistCubit extends Cubit<ShoppinglistCubitState> {
     l.remove(item);
     final recent = List.of(_state.recentItems);
     recent.insert(0, ItemWithDescription.fromItem(item: item));
-    if (recent.length > recentItemCountProvider()) {
-      recent.removeLast();
-    }
+    // if (recent.length > recentItemCountProvider()) {
+    //   recent.removeLast();
+    // }
     if (_state is SearchShoppinglistCubitState) {
       final result = List.of(_state.result);
       final index = result.indexOf(item);
@@ -195,9 +195,9 @@ class ShoppinglistCubit extends Cubit<ShoppinglistCubitState> {
       0,
       selectedItems.map((e) => ItemWithDescription.fromItem(item: e)),
     );
-    if (recent.length > recentItemCountProvider()) {
-      recent.removeRange(recentItemCountProvider(), recent.length);
-    }
+    // if (recent.length > recentItemCountProvider()) {
+    //   recent.removeRange(recentItemCountProvider(), recent.length);
+    // }
 
     if (_state is SearchShoppinglistCubitState) {
       final result = List.of(_state.result);

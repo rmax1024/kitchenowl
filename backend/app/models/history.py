@@ -100,6 +100,5 @@ class History(db.Model, DbModelMixin, TimestampMixin):
         sq3 = (cls.query.filter(cls.shoppinglist_id == shoppinglist_id)
             .filter(cls.id.in_(sq2))
             .join(cls.item)
-            .order_by(Item.name, cls.item_id)
-            .limit(limit))
+            .order_by(Item.name, cls.item_id))
         return (sq3)
