@@ -54,9 +54,9 @@ class _SelectableButtonListTileState extends State<SelectableButtonListTile> {
           });
         },
         child: ListTile(
-          leading: (widget.extraOption != null && mouseHover)
+          leading: (widget.extraOption != null)
               ? widget.extraOption
-              : (widget.onLongPressed != null && mouseHover)
+              : (widget.onLongPressed != null)
                   ? IconButton(
                       onPressed: widget.onLongPressed,
                       color: widget.raised
