@@ -54,13 +54,16 @@ class _SelectableButtonListTileState extends State<SelectableButtonListTile> {
           });
         },
         child: ListTile(
-          leading: widget.selected
-              ? const Icon(Icons.check_rounded)
-              : widget.icon != null
-                  ? Icon(widget.icon,
-                      color: !widget.raised
-                          ? Theme.of(context).iconTheme.color!.withAlpha(85)
-                          : Theme.of(context).iconTheme.color!.withAlpha(170))
+          leading: (widget.extraOption != null && mouseHover)
+              ? widget.extraOption
+              : (widget.onLongPressed != null && mouseHover)
+                  ? IconButton(
+                      onPressed: widget.onLongPressed,
+                      color: widget.raised
+                          ? Theme.of(context).colorScheme.onPrimary
+                          : null,
+                      icon: const Icon(Icons.more_horiz_rounded),
+                    )
                   : null,
           title: Text(
             widget.title + ((widget.description?.isNotEmpty ?? false) ? (' - ' + widget.description!) : ''),
@@ -79,17 +82,7 @@ class _SelectableButtonListTileState extends State<SelectableButtonListTile> {
           onTap: widget.onPressed,
           onLongPress: widget.onLongPressed,
           contentPadding: const EdgeInsets.only(left: 16, right: 8),
-          trailing: (widget.extraOption != null && mouseHover)
-              ? widget.extraOption
-              : (widget.onLongPressed != null && mouseHover)
-                  ? IconButton(
-                      onPressed: widget.onLongPressed,
-                      color: widget.raised
-                          ? Theme.of(context).colorScheme.onPrimary
-                          : null,
-                      icon: const Icon(Icons.more_horiz_rounded),
-                    )
-                  : null,
+          trailing: null,
         ),
       ),
     );
