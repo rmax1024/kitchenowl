@@ -379,7 +379,7 @@ class TransactionShoppingListUpdateItem extends Transaction<bool> {
 
   @override
   Future<bool?> runOnline() async {
-    return ApiService.getInstance().putItem(
+    return ApiService.getInstance().updateItemDescription(
       shoppinglist,
       ItemWithDescription.fromItem(item: item, description: description),
     );

@@ -95,6 +95,22 @@ extension ShoppinglistApi on ApiService {
     return res.statusCode == 200;
   }
 
+  Future<bool> updateItemDescription(
+      ShoppingList shoppinglist,
+      Item item,
+      ) async {
+    final Map<String, dynamic> data = {};
+    if (item is ItemWithDescription) {
+      data['description'] = item.description;
+    }
+    final res = await put(
+      '${route(shoppinglist: shoppinglist)}/update-item-description/${item.id}',
+      jsonEncode(data),
+    );
+
+    return res.statusCode == 200;
+  }
+
   Future<bool> addItemByName(
     ShoppingList shoppinglist,
     String name, [

@@ -38,6 +38,9 @@ class GetRecentItems(Schema):
 class UpdateDescription(Schema):
     description = fields.String(required=True)
 
+class AddItemById(Schema):
+    description = fields.String()
+
 
 class RemoveItem(Schema):
     item_id = fields.Integer(

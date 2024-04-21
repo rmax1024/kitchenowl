@@ -13,6 +13,7 @@ from app.helpers import validate_args, authorize_household
 from .schemas import (
     RemoveItem,
     UpdateDescription,
+    AddItemById,
     AddItemByName,
     CreateList,
     AddRecipeItems,
@@ -78,11 +79,10 @@ def deleteShoppinglist(id):
 
     return jsonify({"msg": "DONE"})
 
-
 @shoppinglist.route("/<int:id>/item/<int:item_id>", methods=["POST", "PUT"])
 @jwt_required()
-@validate_args(UpdateDescription)
-def updateItemDescription(args, id, item_id):
+@validate_args(AddItemById)
+def addItemById(args, id, item_id):
     con = ShoppinglistItems.find_by_ids(id, item_id)
     if not con:
         shoppinglist = Shoppinglist.find_by_id(id)
@@ -107,7 +107,49 @@ def updateItemDescription(args, id, item_id):
         },
         to=con.shoppinglist.household_id,
     )
+    
     return jsonify(con.obj_to_item_dict())
+
+
+@shoppinglist.route("/<int:id>/update-item-description/<int:item_id>", methods=["POST", "PUT"])
+@jwt_required()
+@validate_args(UpdateDescription)
+def updateItemDescription(args, id, item_id):
+    shoppinglist = Shoppinglist.find_by_id(id)
+    item = Item.find_by_id(item_id)
+    if not item or not shoppinglist:
+        raise NotFoundRequest()
+    if shoppinglist.household_id != item.household_id:
+        raise InvalidUsage()
+    shoppinglist.checkAuthorized()
+
+    con = ShoppinglistItems.find_by_ids(id, item_id)
+    if con:
+        con.description = args["description"] or ""
+        con.save()
+        socketio.emit(
+            "shoppinglist_item:update",
+            {
+                "item": item_id,
+                "shoppinglist": id,
+            },
+            to=con.shoppinglist.household_id,
+        )
+        return jsonify(con.obj_to_item_dict())
+    else:
+        hs = History.find_by_shoppinglist_id_and_item_id(id, item_id)
+        if hs:
+            hs.description = args["description"] or ""
+            hs.save()
+            socketio.emit(
+                "shoppinglist_item:update",
+                {
+                    "item": item_id,
+                    "shoppinglist": id,
+                },
+                to=shoppinglist.household_id,
+            )
+            return jsonify(hs.obj_to_item_dict())
 
 
 @shoppinglist.route("/<int:id>/items", methods=["GET"])
@@ -219,10 +261,10 @@ def getSuggestedItems(id):
     item_suggestion_count = 9
     suggestions = []
 
-    suggestions += getSuggestionsBasedOnLastAddedItems(id, item_suggestion_count)
-    suggestions += getSuggestionsBasedOnFrequency(
-        id, item_suggestion_count - len(suggestions)
-    )
+    # suggestions += getSuggestionsBasedOnLastAddedItems(id, item_suggestion_count)
+    #suggestions += getSuggestionsBasedOnFrequency(
+    #    id, item_suggestion_count - len(suggestions)
+    #)
 
     return jsonify([item.obj_to_dict() for item in suggestions])
 
