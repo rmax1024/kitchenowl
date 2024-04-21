@@ -47,6 +47,12 @@ class History(db.Model, DbModelMixin, TimestampMixin):
     def create_dropped(
         cls, shoppinglist, item, description="", created_at=None
     ) -> Self:
+        hs = cls.find_by_shoppinglist_id_and_item_id(shoppinglist.id, item.id)
+        if hs:
+            hs.description = description
+            hs.save()
+            return hs
+        
         return cls(
             shoppinglist_id=shoppinglist.id,
             item_id=item.id,
