@@ -82,13 +82,11 @@ extension ShoppinglistApi on ApiService {
   Future<bool> putItem(
     ShoppingList shoppinglist,
     Item item,
-    [bool raiseItem = true]
   ) async {
     final Map<String, dynamic> data = {};
     if (item is ItemWithDescription) {
       data['description'] = item.description;
     }
-    data['raiseItem'] = raiseItem;
     final res = await put(
       '${route(shoppinglist: shoppinglist)}/item/${item.id}',
       jsonEncode(data),

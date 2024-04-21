@@ -320,14 +320,12 @@ class TransactionShoppingListUpdateItem extends Transaction<bool> {
   final ShoppingList shoppinglist;
   final Item item;
   final String description;
-  final bool raiseItem;
 
   TransactionShoppingListUpdateItem({
     required this.shoppinglist,
     required this.item,
     required this.description,
     DateTime? timestamp,
-    this.raiseItem = false,
   }) : super.internal(
           timestamp ?? DateTime.now(),
           "TransactionShoppingListUpdateItem",
@@ -384,7 +382,6 @@ class TransactionShoppingListUpdateItem extends Transaction<bool> {
     return ApiService.getInstance().putItem(
       shoppinglist,
       ItemWithDescription.fromItem(item: item, description: description),
-      raiseItem,
     );
   }
 }

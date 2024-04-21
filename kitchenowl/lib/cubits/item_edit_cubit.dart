@@ -45,33 +45,32 @@ class ItemEditCubit<T extends Item> extends Cubit<ItemEditState> {
   }
 
   Future<void> refresh() async {
-    // if (_item.id != null) {
-    //   final recipes = (await TransactionHandler.getInstance()
-    //       .runTransaction(TransactionItemGetRecipes(
-    //     household: household,
-    //     item: _item,
-    //   )))
-    //     ..sort(((a, b) {
-    //       if (a.isPlanned == b.isPlanned) {
-    //         return 0;
-    //       } else if (b.isPlanned) {
-    //         return 1;
-    //       } else {
-    //         return -1;
-    //       }
-    //     }));
-    //   emit(state.copyWith(recipes: recipes));
-    // }
+    if (_item.id != null) {
+      final recipes = (await TransactionHandler.getInstance()
+          .runTransaction(TransactionItemGetRecipes(
+        household: household,
+        item: _item,
+      )))
+        ..sort(((a, b) {
+          if (a.isPlanned == b.isPlanned) {
+            return 0;
+          } else if (b.isPlanned) {
+            return 1;
+          } else {
+            return -1;
+          }
+        }));
+      emit(state.copyWith(recipes: recipes));
+    }
   }
 
-  Future<void> saveItem([bool raise = true]) async {
+  Future<void> saveItem() async {
     if (shoppingList != null && state.hasChangedDescription(_item)) {
       await TransactionHandler.getInstance()
           .runTransaction(TransactionShoppingListUpdateItem(
         shoppinglist: shoppingList!,
         item: _item,
         description: state.description,
-        raiseItem: raise,
       ));
     }
     if (state.hasChangedItem(_item)) {
