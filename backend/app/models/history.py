@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Self
 from app import db
 from app.helpers import DbModelMixin, TimestampMixin
@@ -50,6 +50,7 @@ class History(db.Model, DbModelMixin, TimestampMixin):
         hs = cls.find_by_shoppinglist_id_and_item_id(shoppinglist.id, item.id)
         if hs:
             hs.description = description
+            hs.updated_at = datetime.now(timezone.utc)
             hs.save()
             return hs
         
