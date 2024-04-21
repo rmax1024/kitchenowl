@@ -69,6 +69,7 @@ class SliverItemGridList<T extends Item> extends StatelessWidget {
                   (onLongPressed ?? Nullable((item) => openMenu(context, item)))
                       .value,
               extraOption: extraOption?.call(items[i]),
+              shoppingList: shoppingList,
             ),
     );
 

@@ -75,6 +75,16 @@ class History(db.Model, DbModelMixin, TimestampMixin):
     @classmethod
     def find_by_shoppinglist_id(cls, shoppinglist_id: int) -> list[Self]:
         return cls.query.filter(cls.shoppinglist_id == shoppinglist_id).all()
+    
+    @classmethod
+    def find_by_shoppinglist_id_and_item_id(cls, shoppinglist_id: int, item_id: int) -> Self:
+        res = (cls.query
+                .filter(cls.shoppinglist_id == shoppinglist_id)
+                .filter(cls.status == Status.DROPPED)
+                .filter(cls.item_id == item_id)
+                .order_by(cls.created_at.desc())
+                .first())
+        return res
 
     @classmethod
     def find_all(cls) -> list[Self]:

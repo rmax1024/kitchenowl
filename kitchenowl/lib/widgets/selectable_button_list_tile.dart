@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:kitchenowl/models/item.dart';
+import 'package:kitchenowl/cubits/household_cubit.dart';
+import 'package:kitchenowl/cubits/item_edit_cubit.dart';
+import 'package:kitchenowl/enums/update_enum.dart';
+import 'package:kitchenowl/helpers/build_context_extension.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kitchenowl/models/shoppinglist.dart';
 
 class SelectableButtonListTile extends StatefulWidget {
   final String title;
@@ -9,6 +16,8 @@ class SelectableButtonListTile extends StatefulWidget {
   final void Function()? onPressed;
   final void Function()? onLongPressed;
   final Widget? extraOption;
+  final Item item;
+  final ShoppingList? shoppingList;
 
   const SelectableButtonListTile({
     super.key,
@@ -20,20 +29,48 @@ class SelectableButtonListTile extends StatefulWidget {
     this.onLongPressed,
     this.raised = true,
     this.extraOption,
+    required this.item,
+    this.shoppingList,
   });
 
   @override
   State<SelectableButtonListTile> createState() =>
       _SelectableButtonListTileState();
+
 }
 
 class _SelectableButtonListTileState extends State<SelectableButtonListTile> {
   bool mouseHover = false;
+  bool isEdited = false;
+  TextEditingController controller = new TextEditingController();
+  String description = "";
+  late ItemEditCubit<Item> cubit;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.item is ItemWithDescription) {
+      controller.text = (widget.item as ItemWithDescription).description;
+      description = (widget.item as ItemWithDescription).description;
+    }
+    cubit = ItemEditCubit<Item>(
+      household: context.read<HouseholdCubit>().state.household,
+      item: widget.item,
+      shoppingList: widget.shoppingList,
+    );
+  }
+
+  @override
+  void dispose() {
+    cubit.close();
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 2),
+      margin: const EdgeInsets.symmetric(vertical: 1),
       elevation: !widget.raised ? 0 : null,
       color: !widget.raised
           ? ElevationOverlay.applySurfaceTint(
@@ -53,36 +90,120 @@ class _SelectableButtonListTileState extends State<SelectableButtonListTile> {
             mouseHover = false;
           });
         },
-        child: ListTile(
-          leading: (widget.extraOption != null)
-              ? widget.extraOption
-              : (widget.onLongPressed != null)
-                  ? IconButton(
-                      onPressed: widget.onLongPressed,
-                      color: widget.raised
-                          ? Theme.of(context).colorScheme.onPrimary
+        child: Row(
+          children: <Widget>[
+            if (!isEdited)
+              Expanded(
+                child: ListTile(
+                  dense: true,
+                  leading: IconButton(
+                    icon: !widget.raised
+                        ? Icon(Icons.add)
+                        : Icon(Icons.remove),
+                      color: !widget.raised
+                          ? null
+                          : Theme.of(context)
+                          .colorScheme
+                          .onPrimary
+                          .withOpacity(.9),
+                    onPressed: widget.onPressed,
+                  ),
+                  title: Text(
+                    widget.title +
+                        ((description.isNotEmpty ?? false)
+                            ? (' - ' + description!)
+                            : ''),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: !widget.raised
+                            ? null
+                            : Theme.of(context)
+                                .colorScheme
+                                .onPrimary
+                                .withOpacity(.9)),
+                  ),
+                  selected: widget.selected,
+                  visualDensity: VisualDensity(vertical: -4),
+                  onTap: () {
+                    setState(() {
+                      isEdited = true;
+                    });
+                  },
+                  onLongPress: widget.onLongPressed,
+                  contentPadding: const EdgeInsets.only(left: 16, right: 8),
+                  trailing: (widget.extraOption != null && mouseHover)
+                      ? widget.extraOption
+                      : (widget.onLongPressed != null && mouseHover)
+                          ? IconButton(
+                              onPressed: widget.onLongPressed,
+                              color: widget.raised
+                                  ? Theme.of(context).colorScheme.onPrimary
+                                  : null,
+                              icon: const Icon(Icons.more_horiz_rounded),
+                            )
                           : null,
-                      icon: const Icon(Icons.more_horiz_rounded),
-                    )
-                  : null,
-          title: Text(
-            widget.title + ((widget.description?.isNotEmpty ?? false) ? (' - ' + widget.description!) : ''),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: !widget.raised
-                    ? null
-                    : Theme.of(context)
-                    .colorScheme
-                    .onPrimary
-                    .withOpacity(.9)),
-          ),
-          selected: widget.selected,
-          visualDensity: VisualDensity(vertical: -4),
-          onTap: widget.onPressed,
-          onLongPress: widget.onLongPressed,
-          contentPadding: const EdgeInsets.only(left: 16, right: 8),
-          trailing: null,
+                ),
+              ),
+            if (isEdited)
+              Expanded(
+                child: Visibility(
+                  child: TextField(
+                    autofocus: true,
+                    showCursor: true,
+                    controller: controller,
+                    decoration: InputDecoration(
+                        border: InputBorder.none,
+                        labelText: widget.title,
+                        prefixIcon: IconButton(
+                          icon: Icon(Icons.done),
+                          onPressed: () async {
+                            await cubit.saveItem(widget.raised);
+                            setState(() {
+                              description = (cubit.item as ItemWithDescription)?.description ?? "";
+                              isEdited = false;
+                            });
+                          },
+                        ),
+                        contentPadding:
+                            const EdgeInsets.only(left: 16, right: 8)),
+                    onChanged: (s) => cubit.setDescription(s),
+                    onSubmitted: (String value) async {
+                      await cubit.saveItem(widget.raised);
+                      setState(() {
+                        description = value;
+                        isEdited = false;
+                      });
+                    },
+                    cursorColor: !widget.raised
+                        ? null
+                        : Theme.of(context)
+                            .colorScheme
+                            .onPrimary
+                            .withOpacity(.9),
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: !widget.raised
+                            ? null
+                            : Theme.of(context)
+                                .colorScheme
+                                .onPrimary
+                                .withOpacity(.9)),
+                  ),
+                ),
+              ),
+            Expanded(
+              child: ListTile(
+                dense: true,
+                leading: null,
+                selected: widget.selected,
+                visualDensity: VisualDensity(vertical: -4),
+                onTap: widget.onPressed,
+                onLongPress: widget.onLongPressed,
+                contentPadding: const EdgeInsets.only(left: 16, right: 8),
+                trailing: null,
+              ),
+            ),
+          ],
         ),
       ),
     );

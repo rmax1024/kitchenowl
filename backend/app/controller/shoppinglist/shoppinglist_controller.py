@@ -83,6 +83,7 @@ def deleteShoppinglist(id):
 @jwt_required()
 @validate_args(UpdateDescription)
 def updateItemDescription(args, id, item_id):
+    raiseItem = args["raiseItem"]
     con = ShoppinglistItems.find_by_ids(id, item_id)
     if not con:
         shoppinglist = Shoppinglist.find_by_id(id)
@@ -98,15 +99,22 @@ def updateItemDescription(args, id, item_id):
     con.shoppinglist.checkAuthorized()
 
     con.description = args["description"] or ""
-    con.save()
-    socketio.emit(
-        "shoppinglist_item:add",
-        {
-            "item": con.obj_to_item_dict(),
-            "shoppinglist": con.shoppinglist.obj_to_dict(),
-        },
-        to=con.shoppinglist.household_id,
-    )
+    if raiseItem:
+        con.save()
+        socketio.emit(
+            "shoppinglist_item:add",
+            {
+                "item": con.obj_to_item_dict(),
+                "shoppinglist": con.shoppinglist.obj_to_dict(),
+            },
+            to=con.shoppinglist.household_id,
+        )
+    else:
+        hs = History.find_by_shoppinglist_id_and_item_id(id, item_id)
+        if hs:
+            hs.description = args["description"]
+            hs.save()
+            
     return jsonify(con.obj_to_item_dict())
 
 
