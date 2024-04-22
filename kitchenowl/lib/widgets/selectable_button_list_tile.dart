@@ -180,6 +180,9 @@ class _SelectableButtonListTileState extends State<SelectableButtonListTile> {
                         prefixIcon: IconButton(
                           icon: Icon(Icons.done),
                           onPressed: () async {
+                            setState((){
+                              isEdited = false;
+                            });
                             await cubit.saveItem();
                             shoppingListCubit.refresh();
                           },
@@ -188,6 +191,9 @@ class _SelectableButtonListTileState extends State<SelectableButtonListTile> {
                         const EdgeInsets.only(left: 16, right: 8)),
                     onChanged: (s) => cubit.setDescription(s),
                     onSubmitted: (String value) async {
+                      setState((){
+                        isEdited = false;
+                      });
                       await cubit.saveItem();
                       shoppingListCubit.refresh();
                     },
