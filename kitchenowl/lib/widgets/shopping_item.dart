@@ -3,6 +3,7 @@ import 'package:kitchenowl/item_icons.dart';
 import 'package:kitchenowl/models/item.dart';
 import 'package:kitchenowl/widgets/selectable_button_card.dart';
 import 'package:kitchenowl/widgets/selectable_button_list_tile.dart';
+import 'package:kitchenowl/models/shoppinglist.dart';
 
 class ShoppingItemWidget<T extends Item> extends StatelessWidget {
   final T item;
@@ -10,6 +11,7 @@ class ShoppingItemWidget<T extends Item> extends StatelessWidget {
   final void Function(T)? onLongPressed;
   final bool selected;
   final Widget? extraOption;
+  final ShoppingList? shoppingList;
 
   /// Only applicable if gridStyle = false, raises the list items and makes them fully opaque.
   /// defaults to true for item is ShoppinglistItem || item is RecipeItem && selected
@@ -25,6 +27,7 @@ class ShoppingItemWidget<T extends Item> extends StatelessWidget {
     this.gridStyle = true,
     this.raised,
     this.extraOption,
+    this.shoppingList,
   });
 
   @override
@@ -55,6 +58,8 @@ class ShoppingItemWidget<T extends Item> extends StatelessWidget {
             onLongPressed:
                 onLongPressed != null ? () => onLongPressed!(item) : null,
             extraOption: extraOption,
+            item: item,
+            shoppingList: shoppingList,
           );
   }
 }

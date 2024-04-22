@@ -511,6 +511,21 @@ class ShoppinglistCubitState extends Equatable {
         sorting,
         selectedListItems,
       ];
+
+  void updateItemDescription(int itemId, String description){
+    int itemIndex = listItems
+        .indexWhere((e) => e.id == itemId);
+    if (itemIndex >= 0) {
+      listItems[itemIndex] =
+          listItems[itemIndex].copyWith(description: description);
+    } else {
+      itemIndex = recentItems.indexWhere((e) => e.id == itemId);
+      if (itemIndex >= 0) {
+        recentItems[itemIndex] =
+            recentItems[itemIndex].copyWith(description: description);
+      }
+    }
+  }
 }
 
 class LoadingShoppinglistCubitState extends ShoppinglistCubitState {
