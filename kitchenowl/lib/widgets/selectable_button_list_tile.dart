@@ -182,6 +182,7 @@ class _SelectableButtonListTileState extends State<SelectableButtonListTile> {
                           onPressed: () async {
                             setState((){
                               isEdited = false;
+                              description = cubit.state.description;
                             });
                             await cubit.saveItem();
                             shoppingListCubit.refresh();
@@ -193,6 +194,7 @@ class _SelectableButtonListTileState extends State<SelectableButtonListTile> {
                     onSubmitted: (String value) async {
                       setState((){
                         isEdited = false;
+                        description = value;
                       });
                       await cubit.saveItem();
                       shoppingListCubit.refresh();
