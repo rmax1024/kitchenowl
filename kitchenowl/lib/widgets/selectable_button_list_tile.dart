@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kitchenowl/cubits/shoppinglist_cubit.dart';
@@ -55,10 +56,7 @@ class _SelectableButtonListTileState extends State<SelectableButtonListTile> {
       description = (widget.item as ItemWithDescription).description;
     }
     cubit = ItemEditCubit<Item>(
-      household: context
-          .read<HouseholdCubit>()
-          .state
-          .household,
+      household: context.read<HouseholdCubit>().state.household,
       item: widget.item,
       shoppingList: widget.shoppingList,
     );
@@ -74,168 +72,195 @@ class _SelectableButtonListTileState extends State<SelectableButtonListTile> {
   @override
   Widget build(BuildContext context) {
     final shoppingListCubit = BlocProvider.of<ShoppinglistCubit>(context);
-
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 1),
-      elevation: !widget.raised ? 0 : null,
-      color: !widget.raised
-          ? ElevationOverlay.applySurfaceTint(
-        Theme
-            .of(context)
-            .colorScheme
-            .background,
-        Theme
-            .of(context)
-            .colorScheme
-            .surfaceTint,
-        1.5,
-      )
-          : Theme
-          .of(context)
-          .colorScheme
-          .primary,
-      child: MouseRegion(
-        onEnter: (event) {
-          setState(() {
-            mouseHover = true;
-          });
-        },
-        onExit: (event) {
-          setState(() {
-            mouseHover = false;
-          });
-        },
-        child: Row(
-          children: <Widget>[
-            if (!isEdited)
+    if (!Platform.isAndroid) {
+      return Card(
+        margin: const EdgeInsets.symmetric(vertical: 1),
+        elevation: !widget.raised ? 0 : null,
+        color: !widget.raised
+            ? ElevationOverlay.applySurfaceTint(
+                Theme.of(context).colorScheme.background,
+                Theme.of(context).colorScheme.surfaceTint,
+                1.5,
+              )
+            : Theme.of(context).colorScheme.primary,
+        child: MouseRegion(
+          onEnter: (event) {
+            setState(() {
+              mouseHover = true;
+            });
+          },
+          onExit: (event) {
+            setState(() {
+              mouseHover = false;
+            });
+          },
+          child: Row(
+            children: <Widget>[
+              if (!isEdited)
+                Expanded(
+                  child: ListTile(
+                    dense: true,
+                    leading: IconButton(
+                      icon:
+                          !widget.raised ? Icon(Icons.add) : Icon(Icons.remove),
+                      color: !widget.raised
+                          ? null
+                          : Theme.of(context)
+                              .colorScheme
+                              .onPrimary
+                              .withOpacity(.9),
+                      onPressed: widget.onPressed,
+                    ),
+                    title: Text(
+                      widget.title +
+                          ((description.isNotEmpty ?? false)
+                              ? (' - ' + description!)
+                              : ''),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color: !widget.raised
+                              ? null
+                              : Theme.of(context)
+                                  .colorScheme
+                                  .onPrimary
+                                  .withOpacity(.9)),
+                    ),
+                    selected: widget.selected,
+                    visualDensity: VisualDensity(vertical: -4),
+                    onTap: () {
+                      setState(() {
+                        isEdited = true;
+                      });
+                    },
+                    onLongPress: widget.onLongPressed,
+                    contentPadding: const EdgeInsets.only(left: 16, right: 8),
+                    trailing: (widget.extraOption != null && mouseHover)
+                        ? widget.extraOption
+                        : (widget.onLongPressed != null && mouseHover)
+                            ? IconButton(
+                                onPressed: widget.onLongPressed,
+                                color: widget.raised
+                                    ? Theme.of(context).colorScheme.onPrimary
+                                    : null,
+                                icon: const Icon(Icons.more_horiz_rounded),
+                              )
+                            : null,
+                  ),
+                ),
+              if (isEdited)
+                Expanded(
+                  child: Visibility(
+                    child: TextField(
+                      autofocus: true,
+                      showCursor: true,
+                      controller: controller,
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          labelText: widget.title,
+                          prefixIcon: IconButton(
+                            icon: Icon(Icons.done),
+                            onPressed: () async {
+                              setState(() {
+                                isEdited = false;
+                                description = cubit.state.description;
+                              });
+                              await cubit.saveItem();
+                              shoppingListCubit.refresh();
+                            },
+                          ),
+                          contentPadding:
+                              const EdgeInsets.only(left: 16, right: 8)),
+                      onChanged: (s) => cubit.setDescription(s),
+                      onSubmitted: (String value) async {
+                        setState(() {
+                          isEdited = false;
+                          description = value;
+                        });
+                        await cubit.saveItem();
+                        shoppingListCubit.refresh();
+                      },
+                      cursorColor: !widget.raised
+                          ? null
+                          : Theme.of(context)
+                              .colorScheme
+                              .onPrimary
+                              .withOpacity(.9),
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          color: !widget.raised
+                              ? null
+                              : Theme.of(context)
+                                  .colorScheme
+                                  .onPrimary
+                                  .withOpacity(.9)),
+                    ),
+                  ),
+                ),
               Expanded(
                 child: ListTile(
                   dense: true,
-                  leading: IconButton(
-                    icon: !widget.raised ? Icon(Icons.add) : Icon(Icons.remove),
-                    color: !widget.raised
-                        ? null
-                        : Theme
-                        .of(context)
-                        .colorScheme
-                        .onPrimary
-                        .withOpacity(.9),
-                    onPressed: widget.onPressed,
-                  ),
-                  title: Text(
-                    widget.title +
-                        ((description.isNotEmpty ?? false)
-                            ? (' - ' + description!)
-                            : ''),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(
-                        color: !widget.raised
-                            ? null
-                            : Theme
-                            .of(context)
-                            .colorScheme
-                            .onPrimary
-                            .withOpacity(.9)),
-                  ),
+                  leading: null,
                   selected: widget.selected,
                   visualDensity: VisualDensity(vertical: -4),
-                  onTap: () {
-                    setState(() {
-                      isEdited = true;
-                    });
-                  },
+                  onTap: widget.onPressed,
                   onLongPress: widget.onLongPressed,
                   contentPadding: const EdgeInsets.only(left: 16, right: 8),
-                  trailing: (widget.extraOption != null && mouseHover)
-                      ? widget.extraOption
-                      : (widget.onLongPressed != null && mouseHover)
-                      ? IconButton(
-                    onPressed: widget.onLongPressed,
-                    color: widget.raised
-                        ? Theme
-                        .of(context)
-                        .colorScheme
-                        .onPrimary
-                        : null,
-                    icon: const Icon(Icons.more_horiz_rounded),
-                  )
-                      : null,
+                  trailing: null,
                 ),
               ),
-            if (isEdited)
-              Expanded(
-                child: Visibility(
-                  child: TextField(
-                    autofocus: true,
-                    showCursor: true,
-                    controller: controller,
-                    decoration: InputDecoration(
-                        border: InputBorder.none,
-                        labelText: widget.title,
-                        prefixIcon: IconButton(
-                          icon: Icon(Icons.done),
-                          onPressed: () async {
-                            setState((){
-                              isEdited = false;
-                              description = cubit.state.description;
-                            });
-                            await cubit.saveItem();
-                            shoppingListCubit.refresh();
-                          },
-                        ),
-                        contentPadding:
-                        const EdgeInsets.only(left: 16, right: 8)),
-                    onChanged: (s) => cubit.setDescription(s),
-                    onSubmitted: (String value) async {
-                      setState((){
-                        isEdited = false;
-                        description = value;
-                      });
-                      await cubit.saveItem();
-                      shoppingListCubit.refresh();
-                    },
-                    cursorColor: !widget.raised
-                        ? null
-                        : Theme
-                        .of(context)
-                        .colorScheme
-                        .onPrimary
-                        .withOpacity(.9),
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(
-                        color: !widget.raised
-                            ? null
-                            : Theme
-                            .of(context)
-                            .colorScheme
-                            .onPrimary
-                            .withOpacity(.9)),
-                  ),
-                ),
-              ),
-            Expanded(
-              child: ListTile(
-                dense: true,
-                leading: null,
-                selected: widget.selected,
-                visualDensity: VisualDensity(vertical: -4),
-                onTap: widget.onPressed,
-                onLongPress: widget.onLongPressed,
-                contentPadding: const EdgeInsets.only(left: 16, right: 8),
-                trailing: null,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      return Card(
+        margin: const EdgeInsets.symmetric(vertical: 1),
+        elevation: !widget.raised ? 0 : null,
+        color: !widget.raised
+            ? ElevationOverlay.applySurfaceTint(
+                Theme.of(context).colorScheme.background,
+                Theme.of(context).colorScheme.surfaceTint,
+                1.5,
+              )
+            : Theme.of(context).colorScheme.primary,
+        child: MouseRegion(
+          onEnter: (event) {
+            setState(() {
+              mouseHover = true;
+            });
+          },
+          onExit: (event) {
+            setState(() {
+              mouseHover = false;
+            });
+          },
+          child: ListTile(
+            dense: true,
+            leading: null,
+            title: Text(
+              widget.title +
+                  ((widget.description?.isNotEmpty ?? false)
+                      ? (' - ' + widget.description!)
+                      : ''),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: !widget.raised
+                      ? null
+                      : Theme.of(context)
+                          .colorScheme
+                          .onPrimary
+                          .withOpacity(.9)),
+            ),
+            selected: widget.selected,
+            visualDensity: VisualDensity(vertical: -4),
+            onTap: widget.onPressed,
+            onLongPress: widget.onLongPressed,
+            contentPadding: const EdgeInsets.only(left: 16, right: 8),
+            trailing: null,
+          ),
+        ),
+      );
+    }
   }
 }
