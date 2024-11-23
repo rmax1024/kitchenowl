@@ -504,7 +504,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     icon: const Icon(Icons.logout),
                     style: const ButtonStyle(
                       foregroundColor:
-                          MaterialStatePropertyAll(Colors.redAccent),
+                          WidgetStatePropertyAll(Colors.redAccent),
                     ),
                     child: Text(AppLocalizations.of(context)!.logout),
                   ),

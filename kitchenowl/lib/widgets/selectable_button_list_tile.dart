@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kitchenowl/cubits/shoppinglist_cubit.dart';
 import 'package:kitchenowl/cubits/item_edit_cubit.dart';
-import 'package:kitchenowl/enums/shoppinglist_sorting.dart';
 import 'package:kitchenowl/models/item.dart';
-import 'package:collection/collection.dart';
 import 'package:kitchenowl/models/shoppinglist.dart';
 import 'package:kitchenowl/cubits/household_cubit.dart';
 
@@ -78,7 +76,7 @@ class _SelectableButtonListTileState extends State<SelectableButtonListTile> {
         elevation: !widget.raised ? 0 : null,
         color: !widget.raised
             ? ElevationOverlay.applySurfaceTint(
-                Theme.of(context).colorScheme.background,
+                Theme.of(context).colorScheme.surface,
                 Theme.of(context).colorScheme.surfaceTint,
                 1.5,
               )
@@ -114,7 +112,7 @@ class _SelectableButtonListTileState extends State<SelectableButtonListTile> {
                     title: Text(
                       widget.title +
                           ((description.isNotEmpty ?? false)
-                              ? (' - ' + description!)
+                              ? (' - ' + description)
                               : ''),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -218,7 +216,7 @@ class _SelectableButtonListTileState extends State<SelectableButtonListTile> {
         elevation: !widget.raised ? 0 : null,
         color: !widget.raised
             ? ElevationOverlay.applySurfaceTint(
-                Theme.of(context).colorScheme.background,
+                Theme.of(context).colorScheme.surface,
                 Theme.of(context).colorScheme.surfaceTint,
                 1.5,
               )

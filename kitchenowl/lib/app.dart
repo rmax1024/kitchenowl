@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/foundation.dart';
@@ -155,12 +156,16 @@ class _AppState extends State<App> {
                       value: _getSystemUI(context, state),
                       child: child ?? const SizedBox(),
                     ),
+
                     onGenerateTitle: (BuildContext context) =>
                         AppLocalizations.of(context)!.appTitle,
-                    localizationsDelegates:
-                        AppLocalizations.localizationsDelegates,
-                    supportedLocales: const [Locale('en')] +
-                        AppLocalizations.supportedLocales,
+                    localizationsDelegates: [
+                        AppLocalizations.delegate,
+                        GlobalMaterialLocalizations.delegate,
+                        GlobalWidgetsLocalizations.delegate,
+                        GlobalCupertinoLocalizations.delegate,
+                    ],
+                    supportedLocales: const [Locale('en')],
                     theme: AppThemes.light(lightColorScheme),
                     darkTheme: AppThemes.dark(darkColorScheme),
                     themeMode: state.themeMode,
@@ -192,7 +197,7 @@ class _AppState extends State<App> {
         }
       light:
       case ThemeMode.light:
-        final Color backgroundColor = Theme.of(context).colorScheme.background;
+        final Color backgroundColor = Theme.of(context).colorScheme.surface;
         return SystemUiOverlayStyle.dark.copyWith(
           statusBarColor: Colors.transparent,
           statusBarIconBrightness: Brightness.dark,
@@ -203,7 +208,7 @@ class _AppState extends State<App> {
         );
       dark:
       case ThemeMode.dark:
-        final Color backgroundColor = Theme.of(context).colorScheme.background;
+        final Color backgroundColor = Theme.of(context).colorScheme.surface;
         return SystemUiOverlayStyle.light.copyWith(
           statusBarColor: Colors.transparent,
           statusBarIconBrightness: Brightness.light,

@@ -46,14 +46,14 @@ abstract class AppThemes {
       ),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       appBarTheme: AppBarTheme(
-        backgroundColor: colorScheme.background,
-        surfaceTintColor: colorScheme.background,
+        backgroundColor: colorScheme.surface,
+        surfaceTintColor: colorScheme.surface,
       ),
       navigationRailTheme: NavigationRailThemeData(
-        backgroundColor: colorScheme.background,
+        backgroundColor: colorScheme.surface,
       ),
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: colorScheme.background,
+        backgroundColor: colorScheme.surface,
         height: 70,
       ),
       cardTheme: CardTheme(
@@ -79,24 +79,24 @@ abstract class AppThemes {
       cardTheme: CardTheme(
         clipBehavior: Clip.antiAlias,
         elevation: 0,
-        color: colorScheme.surfaceVariant,
+        color: colorScheme.surfaceContainerHighest,
       ),
       navigationRailTheme: NavigationRailThemeData(
-        backgroundColor: colorScheme.background,
+        backgroundColor: colorScheme.surface,
       ),
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: colorScheme.background,
+        backgroundColor: colorScheme.surface,
         height: 70,
       ),
       appBarTheme: AppBarTheme(
-        color: colorScheme.background,
-        surfaceTintColor: colorScheme.background,
+        color: colorScheme.surface,
+        surfaceTintColor: colorScheme.surface,
       ),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           foregroundColor: colorScheme.onSurfaceVariant,
-          backgroundColor: colorScheme.surfaceVariant,
+          backgroundColor: colorScheme.surfaceContainerHighest,
           elevation: 0,
         ),
       ),
@@ -106,7 +106,7 @@ abstract class AppThemes {
         elevation: 0,
       ),
       listTileTheme: ListTileThemeData(
-        iconColor: colorScheme.onBackground,
+        iconColor: colorScheme.onSurface,
       ),
       chipTheme: ChipThemeData.fromDefaults(
         primaryColor: colorScheme.primary,

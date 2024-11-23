@@ -61,9 +61,9 @@ class ChartBarMemberDistribution extends StatelessWidget {
             ),
             outsideLabelStyleSpec: charts.TextStyleSpec(
               color: charts.Color(
-                r: Theme.of(context).colorScheme.onBackground.red,
-                g: Theme.of(context).colorScheme.onBackground.green,
-                b: Theme.of(context).colorScheme.onBackground.blue,
+                r: Theme.of(context).colorScheme.onSurface.red,
+                g: Theme.of(context).colorScheme.onSurface.green,
+                b: Theme.of(context).colorScheme.onSurface.blue,
               ),
             ),
           ),
