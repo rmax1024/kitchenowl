@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +10,7 @@ import 'package:kitchenowl/enums/oidc_provider.dart';
 import 'package:kitchenowl/services/api/api_service.dart';
 import 'package:kitchenowl/kitchenowl.dart';
 import 'package:sliver_tools/sliver_tools.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -177,7 +177,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                         if (!kIsWeb &&
-                            (Platform.isIOS || Platform.isMacOS) &&
+                            (UniversalPlatform.isIOS || UniversalPlatform.isMacOS) &&
                             _providerEnabled(OIDCProivder.apple))
                           Padding(
                             padding: const EdgeInsets.only(top: 10, bottom: 2),

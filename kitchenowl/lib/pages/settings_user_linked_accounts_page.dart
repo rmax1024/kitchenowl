@@ -1,11 +1,10 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kitchenowl/cubits/settings_user_cubit.dart';
 import 'package:kitchenowl/enums/oidc_provider.dart';
 import 'package:kitchenowl/kitchenowl.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 class SettingsLinkedAccountsPage extends StatelessWidget {
   final List<OIDCProivder> oidcProvider;
@@ -40,7 +39,7 @@ class SettingsLinkedAccountsPage extends StatelessWidget {
                         : LoadingElevatedButton(
                             onPressed: (oidcProvider[i] != OIDCProivder.apple ||
                                     (!kIsWeb &&
-                                        (Platform.isIOS || Platform.isMacOS)))
+                                        (UniversalPlatform.isIOS || UniversalPlatform.isMacOS)))
                                 ? () => oidcProvider[i].login(context)
                                 : null,
                             child: Text(AppLocalizations.of(context)!.link),

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:animations/animations.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -16,6 +14,7 @@ import 'package:kitchenowl/pages/expense_page.dart';
 import 'package:intl/intl.dart';
 import 'package:kitchenowl/widgets/expense_category_icon.dart';
 import 'package:tuple/tuple.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 class ExpenseItemWidget extends StatelessWidget {
   final Household? household;
@@ -88,7 +87,7 @@ class ExpenseItemWidget extends StatelessWidget {
               ),
             ],
           ),
-          onTap: (kIsWeb || Platform.isIOS)
+          onTap: (kIsWeb || UniversalPlatform.isIOS)
               ? () async {
                   final _household = household ??
                       BlocProvider.of<HouseholdCubit>(context).state.household;

@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:universal_platform/universal_platform.dart';
 import 'package:url_launcher/url_launcher.dart' as ul;
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart' as ct;
 
@@ -9,7 +8,7 @@ Future<void> openUrl(BuildContext context, String url,
     {bool webOpenNewTab = true}) async {
   if (!isValidUrl(url)) return;
 
-  return (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
+  return (!kIsWeb && (UniversalPlatform.isAndroid || UniversalPlatform.isIOS))
       ? await ct.launchUrl(
           Uri.parse(url),
           customTabsOptions: ct.CustomTabsOptions(

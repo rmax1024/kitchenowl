@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +21,7 @@ import 'package:kitchenowl/styles/colors.dart';
 import 'package:kitchenowl/widgets/settings/color_button.dart';
 import 'package:kitchenowl/widgets/user_list_tile.dart';
 import 'package:sliver_tools/sliver_tools.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 class SettingsPage extends StatefulWidget {
   final Household? household;
@@ -472,7 +471,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   "https://hosted.weblate.org/engage/kitchenowl",
                 ),
               ),
-              if (kIsWeb || !Platform.isIOS)
+              if (kIsWeb || !UniversalPlatform.isIOS)
                 ListTile(
                   title: Text(AppLocalizations.of(context)!.supportDevelopment),
                   leading: const Icon(Icons.volunteer_activism_rounded),

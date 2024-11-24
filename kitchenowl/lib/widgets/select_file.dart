@@ -1,11 +1,10 @@
-import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kitchenowl/helpers/named_bytearray.dart';
 import 'package:kitchenowl/kitchenowl.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 Future<NamedByteArray?> selectFile({
   required BuildContext context,
@@ -14,7 +13,7 @@ Future<NamedByteArray?> selectFile({
 }) async {
   final ImagePicker picker = ImagePicker();
 
-  if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+  if (!kIsWeb && (UniversalPlatform.isAndroid || UniversalPlatform.isIOS)) {
     int? i = await showDialog<int>(
       context: context,
       builder: (context) => SelectDialog(

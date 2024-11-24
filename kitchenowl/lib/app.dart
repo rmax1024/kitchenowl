@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:io';
+import 'package:universal_platform/universal_platform.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -57,7 +57,7 @@ class _AppState extends State<App> {
   void initState() {
     super.initState();
 
-    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+    if (!kIsWeb && (UniversalPlatform.isAndroid || UniversalPlatform.isIOS)) {
       final handler = ShareHandlerPlatform.instance;
       _intentDataStreamSubscription =
           handler.sharedMediaStream.listen(_handleSharedMedia);

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:animations/animations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +9,7 @@ import 'package:kitchenowl/models/household.dart';
 import 'package:kitchenowl/models/recipe.dart';
 import 'package:kitchenowl/pages/recipe_page.dart';
 import 'package:tuple/tuple.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 class RecipeItemWidget extends StatelessWidget {
   final Recipe recipe;
@@ -47,7 +46,7 @@ class RecipeItemWidget extends StatelessWidget {
           trailing: const Icon(Icons.arrow_right_rounded),
           selected: recipe.isPlanned,
           subtitle: description,
-          onTap: (kIsWeb || Platform.isIOS)
+          onTap: (kIsWeb || UniversalPlatform.isIOS)
               ? () async {
                   final household =
                       BlocProvider.of<HouseholdCubit>(context).state.household;

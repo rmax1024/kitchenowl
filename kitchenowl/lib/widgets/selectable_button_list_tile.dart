@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kitchenowl/cubits/shoppinglist_cubit.dart';
@@ -70,7 +71,7 @@ class _SelectableButtonListTileState extends State<SelectableButtonListTile> {
   @override
   Widget build(BuildContext context) {
     final shoppingListCubit = BlocProvider.of<ShoppinglistCubit>(context);
-    if (!Platform.isAndroid) {
+    if (kIsWeb) {
       return Card(
         margin: const EdgeInsets.symmetric(vertical: 1),
         elevation: !widget.raised ? 0 : null,

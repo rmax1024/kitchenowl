@@ -11,6 +11,7 @@ import 'package:kitchenowl/cubits/household_add_update/household_update_cubit.da
 import 'package:kitchenowl/kitchenowl.dart';
 import 'package:kitchenowl/models/import_settings.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 import 'import_settings_dialog.dart';
 
@@ -68,9 +69,9 @@ class SliverHouseholdDangerZone extends StatelessWidget {
                             html.document.body?.children.remove(anchor);
                             html.Url.revokeObjectUrl(url.toString());
                           }
-                        } else if (Platform.isLinux ||
-                            Platform.isMacOS ||
-                            Platform.isWindows) {
+                        } else if (UniversalPlatform.isLinux ||
+                            UniversalPlatform.isMacOS ||
+                            UniversalPlatform.isWindows) {
                           String? outputPath =
                               await FilePicker.platform.saveFile(
                             dialogTitle: 'Please select an output file:',
